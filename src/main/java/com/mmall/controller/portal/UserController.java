@@ -1,11 +1,9 @@
 package com.mmall.controller.portal;
 
 import com.mmall.common.Const;
-import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
-import net.sf.jsqlparser.schema.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-import javax.swing.plaf.IconUIResource;
 
 @Controller
 @RequestMapping("/user")
@@ -86,7 +83,7 @@ public class UserController {
         if(user !=null ){
             return ServerResponse.createBySuccess(user);
         }
-        return ServerResponse.createBySuccessMessage("用户未登陆，无法获取当前用户信息！");
+        return ServerResponse.createBySuccess("用户未登陆，无法获取当前用户信息！");
     }
 
     /**
@@ -130,7 +127,6 @@ public class UserController {
 
     /**
      * 重置密码
-     * @param oldPasswaord
      * @param newPassword
      * @param session
      * @return
@@ -140,7 +136,7 @@ public class UserController {
     public ServerResponse<String> ResetPassword(String oldPassword,String newPassword,HttpSession session){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(user == null){
-            return ServerResponse.createByErrorMessage("用户未登陆，请重新登录");
+            return ServerResponse.createByError("用户未登陆，请重新登录");
         }
 
         return iUserService.ResetPassword(oldPassword,newPassword,user);
@@ -157,7 +153,7 @@ public class UserController {
     public ServerResponse<User> updateUserDetail(User user,HttpSession session){
         User checkUser = (User)session.getAttribute(Const.CURRENT_USER);
         if(checkUser == null){
-            return ServerResponse.createByErrorMessage("未登陆");
+            return ServerResponse.createByError("未登陆");
         }
         user.setId(checkUser.getId());
         user.setUsername(checkUser.getUsername());
@@ -178,7 +174,7 @@ public class UserController {
     public ServerResponse<User> getUserInformation(HttpSession session){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
         if(currentUser == null){
-            return ServerResponse.createByErrorMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，请重新登录");
+            return ServerResponse.createByError("未登录，请重新登录");
         }
         return iUserService.getInformation(currentUser.getId());
     }
